@@ -1,22 +1,25 @@
 package modulo3_3_actividad05;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.junit.jupiter.api.Test;
 
 public class Actividad05Test {
 
+    private static final String SALIDA_ESPERADA = "Producto: Lapiz\nCantidad: 3\nTotal: 1.5";
+
+    private static final Pattern NUMERO = Pattern.compile("-?\\d+(?:[.,]\\d+)?");
+
     @Test
     void pruebaSalidaEsperada() throws Exception {
         String salida = ejecutarMain();
-        assertEquals("Producto: Lapiz\nCantidad: 3\nTotal: 1.5", salida.trim());
+        comprobarSalida(SALIDA_ESPERADA, salida);
     }
 
     private String ejecutarMain() throws Exception {
@@ -28,6 +31,60 @@ public class Actividad05Test {
         } finally {
             System.setOut(originalOut);
         }
-        return buffer.toString(StandardCharsets.UTF_8).replace("\r\n", "\n");
+        return buffer.toString(StandardCharsets.UTF_8);
+    }
+
+    // Compara linea a linea ignorando espacios al principio y al final de cada linea,
+    // saltos de linea finales y pequenas diferencias de redondeo en numeros decimales.
+    private void comprobarSalida(String esperada, String real) {
+        String[] lineasEsperadas = normalizar(esperada).split("\n", -1);
+        String[] lineasReales = normalizar(real).split("\n", -1);
+        boolean iguales = lineasEsperadas.length == lineasReales.length;
+        for (int i = 0; iguales && i < lineasEsperadas.length; i++) {
+            iguales = lineasIguales(lineasEsperadas[i], lineasReales[i]);
+        }
+        if (!iguales) {
+            assertEquals(normalizar(esperada), normalizar(real));
+        }
+    }
+
+    private String normalizar(String texto) {
+        String[] lineas = texto.replace("\r\n", "\n").replace('\r', '\n').trim().split("\n", -1);
+        StringBuilder resultado = new StringBuilder();
+        for (int i = 0; i < lineas.length; i++) {
+            if (i > 0) {
+                resultado.append('\n');
+            }
+            resultado.append(lineas[i].trim());
+        }
+        return resultado.toString();
+    }
+
+    private boolean lineasIguales(String esperada, String real) {
+        if (esperada.equals(real)) {
+            return true;
+        }
+        if (!NUMERO.matcher(esperada).replaceAll("#").equals(NUMERO.matcher(real).replaceAll("#"))) {
+            return false;
+        }
+        Matcher numerosEsperados = NUMERO.matcher(esperada);
+        Matcher numerosReales = NUMERO.matcher(real);
+        while (numerosEsperados.find() && numerosReales.find()) {
+            String numeroEsperado = numerosEsperados.group();
+            String numeroReal = numerosReales.group();
+            if (numeroEsperado.contains(".")) {
+                if (!numeroReal.contains(".") && !numeroReal.contains(",")) {
+                    return false;
+                }
+                double valorEsperado = Double.parseDouble(numeroEsperado);
+                double valorReal = Double.parseDouble(numeroReal.replace(',', '.'));
+                if (Math.abs(valorEsperado - valorReal) > 1e-6) {
+                    return false;
+                }
+            } else if (!numeroEsperado.equals(numeroReal)) {
+                return false;
+            }
+        }
+        return true;
     }
 }

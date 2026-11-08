@@ -28,6 +28,5 @@ Hola, Ana Gomez
 
 ## GitHub Actions
 
-- El workflow `Java CI` se ejecuta automaticamente en cada `push`.
-- Si pasa, el repositorio esta aprobado.
-- Si falla, revisa los errores de compilacion o los tests.
+- Sube tu trabajo a **tu rama** (no a `main`): el workflow `Autocorrección` compila y ejecuta los tests de cada actividad que hayas modificado.
+- En la pestaña **Actions** del repositorio verás ✅ si la actividad está aprobada o ❌ si hay errores de compilación o tests que fallan.
