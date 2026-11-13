@@ -5,6 +5,6 @@ public class Actividad03 {
         String nombre = "Luis";
         int edad = 16;
 
-        System.out.println("Hola, " nombre " tienes " + edad + " anos");
+        System.out.println("Hola, " +nombre+ " tienes " + edad + " anos");
     }
 }

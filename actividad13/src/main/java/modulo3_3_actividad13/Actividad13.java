@@ -7,5 +7,6 @@ public class Actividad13 {
         int anioNacimiento = 2008;
 
         // TODO: genera el identificador.
+        System.out.println(nombre+"."+apellido+anioNacimiento);
     }
 }
