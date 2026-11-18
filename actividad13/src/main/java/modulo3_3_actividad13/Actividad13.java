@@ -5,7 +5,7 @@ public class Actividad13 {
         String nombre = "ana";
         String apellido = "gomez";
         int anioNacimiento = 2008;
-
+System.out.println(nombre + "." + apellido + anioNacimiento);
         // TODO: genera el identificador.
     }
 }
