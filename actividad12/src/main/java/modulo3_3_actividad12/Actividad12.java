@@ -6,5 +6,7 @@ public class Actividad12 {
         String personaje2 = "Luis";
 
         // TODO: imprime el dialogo usando \n y comillas escapadas.
+        System.out.println(personaje1 + " dijo: " +  "\"Hola\"");
+        System.out.println(personaje2 + " respondio: " +  "\"Buenos dias\"");
     }
 }
